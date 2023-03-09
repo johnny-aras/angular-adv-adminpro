@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-body" *ngIf="doughnutChartLabels.length>0">                  
+
+      <h3>{{title}}</h3>
+
+    <canvas baseChart class="chart"    
+      [data]="doughnutChartData"     
+      [labels]="doughnutChartLabels"      
+      [type]="doughnutChartType">
+    </canvas>
+      {{doughnutChartLabels}}
+  </div>
+</div>
