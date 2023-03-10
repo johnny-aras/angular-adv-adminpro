@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SettingsService } from '../services/settings.service';
+declare function customInitFunctions():void;
 
 @Component({
   selector: 'app-pages',
@@ -8,9 +10,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PagesComponent implements OnInit {
 
-  constructor() { }
+  //url:string ="";
+  ///segundo comentario
+  //linkTheme=document.querySelector('#theme');
+
+  constructor(private settingService:SettingsService) { }
 
   ngOnInit(): void {
+
+    customInitFunctions();
+    ///segundo comentario
+    //const url= localStorage.getItem('tema') || `./assets/css/colors/green.css`;        
+
+    //const tema= localStorage.getItem('tema');
+    /*if(tema)
+    {
+      this.url=tema;
+    }else{
+      this.url = `./assets/css/colors/green.css`;
+    }*/
+    ///segundo comentario
+    //console.log(url);
+    //this.linkTheme?.setAttribute('href',url);
+    ///
+
+    //localStorage.setItem('tema',url);
   }
 
 }
