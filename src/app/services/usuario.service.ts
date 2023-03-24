@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-import { catchError, map, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
 
-import { Usuario } from '../models/usuario.model';
+import { Usuario } from '../models/usuario.models';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 declare const  google:any;
 
@@ -18,20 +19,22 @@ const base_url = environment.base_url;
   providedIn: 'root'
 })
 export class UsuarioService {
-
+      
+  public usuario:Usuario;
   constructor(private http:HttpClient,
               private router:Router,
-              private ngZone:NgZone) { }
+              private ngZone:NgZone) {                 
+              }
 
   //urlEndPoint:string = `localhost:3005/api/usuarios`
 
-  /*
+  
   //implemnentacion opcional para probar mas adelante
-  crearUsuario(usuario:Usuario):Observable<Usuario>
+  crearUsuarios(usuario:Usuario):Observable<Usuario>
   {
-    return this.http.post<Usuario>(this.urlEndPoint,Usuario);
-  }*/
-
+    return this.http.post<Usuario>(base_url,Usuario);
+  }
+  
   logout()
   {
     localStorage.removeItem('token');
@@ -41,20 +44,39 @@ export class UsuarioService {
       })
     })
   }
+  get token():string
+  { 
+    return localStorage.getItem('token') || '';
+  }
+  get uid(){
+    return this.usuario?.uid || '';
+  }
 
   validarToken()
   {
-    const token= localStorage.getItem('token') || '';
+    let usuarios;
+    //const token= localStorage.getItem('token') || '';
     return this.http.get(`${base_url}/login/renew`,{
       headers:{
-        'x-token':token
+        'x-token':this.token
       }
     }).pipe(
-      tap((resp:any) => {
-        localStorage.setItem('token',resp.token);
+      map((resp:any) => {
+        const {nombre, email, img='', role,google, uid }=resp.usuario;
+        this.usuario = new Usuario(nombre, email,'', img, role, google ,uid);
+        
+        console.log('este es el usuario:'+this.usuario.img);
+        //console.log(this.usuario.mostrarNombre());        
+        localStorage.setItem('token',resp.token);        
+        return true;
       }),
-      map( resp =>true),
-      catchError(error=> of(false))
+      //map( resp =>true),
+      catchError(error=>
+      {
+        console.log(error);        
+        return  of(false)
+      }
+      )
         //this.router.navigateByUrl("/login");
         //throwError(()=>error);        
         //return of(false);
@@ -72,6 +94,24 @@ export class UsuarioService {
                     localStorage.setItem('token',resp.token)
                     })      
                     );
+  }
+  actualizarPerfil(data:{email:string,nombre:string,password:string,role:string}){
+    console.log('el role es:'+this.usuario?.role);
+    data = {
+      ...data,
+      role:this.usuario?.role as string
+    }
+    
+    
+    return this.http.put(`${base_url}/usuarios/${this.uid}`,data,{
+      headers:{
+        'x-token':this.token
+      }      
+    });
+}
+  crearUsuario2(user:Usuario)
+  {
+    return this.http.post(`${base_url}/usuarios`,user);
   }
 
   login(formData:LoginForm){    

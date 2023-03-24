@@ -84,7 +84,7 @@ export class LoginComponent implements AfterViewInit{
       //Swal.fire('Usuario Autenticado',`Usuario: ${this.loginForm.value.email} Bienvenido`,'success');
         //MOVER AL DASHBOARD
           this.router.navigateByUrl("/");   
-          console.log(resp);      
+          //console.log(resp);      
     },(err)=>{
       Swal.fire('Error',err.error.msg,'error');
     });
