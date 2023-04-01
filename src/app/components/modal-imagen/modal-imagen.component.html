@@ -1,0 +1,35 @@
+<!-- [class.oculto]="modalImagenService.ocultarModal">   -->
+<div class="fondo-modal-imagen" 
+     [class.oculto]="getEstado()">  
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">                    
+            <h4 class="modal-title" id="exampleModalLabel1">Cargar Imagen</h4>
+            <button type="button"
+             class="close" 
+             data-dismiss="modal" 
+             aria-label="Close">
+             <span aria-hidden="true" (click)="cerrarModal()" >×            
+             </span></button>
+        </div>
+        <div class="modal-body">
+          <h3>
+            Seleccionar Una Imagen:
+
+            <div class="text-center">                  
+              <!-- <img *ngIf="!imgTemp"  [src]="modalImagenService.img" class="img-avatar" > -->
+              <img *ngIf="!imgTemp"  [src]="getImagen()" class="img-avatar" >
+              <img *ngIf="imgTemp"   [src]="imgTemp" class="img-avatar" >
+          </div>
+
+          <input type="file" (change)="cambiarImagen($event)">              
+
+          </h3>
+        </div>
+        <div class="modal-footer">
+            <button (click)="cerrarModal()" type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button (click)="subirImagen()" type="button" class="btn btn-primary">Actualizar Foto</button>
+        </div>
+    </div>
+  </div>
+</div>

@@ -12,6 +12,9 @@ import { ProgressComponent } from './progress/progress.component';
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 
+//Mantenimientos
+import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+
   const routes: Routes = [  
   {   path:'dashboard',
       component:PagesComponent,
@@ -23,8 +26,11 @@ import { RxjsComponent } from './rxjs/rxjs.component';
         {path:'grafica1',component:Grafica1Component,data:{titulo:'Grafica #1'}},
         {path:'account-settings',component:AccountSettingsComponent,data:{titulo:'Ajustes de Cuenta:'}},
         {path:'promesas',component:PromesasComponent,data:{titulo:'Promesas'}},
-        {path:'rxjs',component:RxjsComponent,data:{titulo:'RxJs'}}
+        {path:'rxjs',component:RxjsComponent,data:{titulo:'RxJs'}},
         //{path:'',redirectTo:'/dashboard',pathMatch:'full'}
+
+        //MANTENIMIENTOS:
+        {path:'usuarios',component:UsuariosComponent,data:{titulo:'Usuario de aplicacion '}}
       ]
 
   }

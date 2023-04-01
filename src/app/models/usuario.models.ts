@@ -20,6 +20,10 @@ constructor(
  {
   //ruta
   //localhost:3005/api/upload/usuarios/6410e655973eab75b7d2bbcb
+  if(!this.img)
+  {
+    return `${base_url}/upload/usuarios/no-image`; 
+  }
   if(this.img?.includes('https'))
   {
     return this.img;
@@ -28,7 +32,8 @@ constructor(
   {
     return `${base_url}/upload/usuarios/${this.img}`;
   }else {
-    console.log('esta es la imagen en si: '+this.img);    
+    this.img='';
+    //console.log('esta es la imagen en si: '+this.img);    
     return `${base_url}/upload/usuarios/no-image`;
   }
  }

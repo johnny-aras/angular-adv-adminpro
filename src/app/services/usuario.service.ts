@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
+import { CargarUsuario } from '../interfaces/cargar-usuarios.interface';
 
 import { Usuario } from '../models/usuario.models';
 import { Router } from '@angular/router';
@@ -51,6 +52,13 @@ export class UsuarioService {
   get uid(){
     return this.usuario?.uid || '';
   }
+  get headers(){
+    return { 
+      headers:{
+        'x-token':this.token
+      }
+    }
+  }
 
   validarToken()
   {
@@ -62,7 +70,11 @@ export class UsuarioService {
       }
     }).pipe(
       map((resp:any) => {
-        const {nombre, email, img='', role,google, uid }=resp.usuario;
+        //esta declaracion nos ahorra hacer una validacion en el modelo, de que la imagen no venga undefined
+        //por lo tanto, si es undefined el undefined no tiene como metodo includes sale el error.
+        //se puede hacer esto o corregir el modelo 
+        //const {nombre, email, img='', role,google, uid }=resp.usuario;
+        const {nombre, email, img, role,google, uid }=resp.usuario;
         this.usuario = new Usuario(nombre, email,'', img, role, google ,uid);
         
         console.log('este es el usuario:'+this.usuario.img);
@@ -96,10 +108,10 @@ export class UsuarioService {
                     );
   }
   actualizarPerfil(data:{email:string,nombre:string,password:string,role:string}){
-    console.log('el role es:'+this.usuario?.role);
+    console.log('el role es:'+this.usuario.role);
     data = {
       ...data,
-      role:this.usuario?.role as string
+      role:this.usuario.role as string
     }
     
     
@@ -109,6 +121,37 @@ export class UsuarioService {
       }      
     });
 }
+//RUTA:/api/suaurios/?desde=0 GET
+getUsuarios()
+{
+  return this.http.get(`${base_url}/usuarios/`);  
+}
+getUsuarios2(desde:number=0)
+{
+  
+   return this.http.get<CargarUsuario>(`${base_url}/usuarios/?desde=${desde}`,this.headers)
+   .pipe(
+    //delay(5000),
+    map(resp =>{
+      const usuarios = resp.usuarios.map(
+        user =>new Usuario(user.nombre,user.email,'',user.img,user.role,user.google,user.uid)
+      )
+      return {
+        total:resp.total,
+        usuarios
+      };
+    })
+   );  
+}
+
+//RUTA  
+//localhost:3005/api/usuarios/64108ff3c73481bc8c83bf8f
+eliminarUsuario(usuario:Usuario)
+{
+  return this.http.delete(`${base_url}/usuarios/${usuario.uid}`,this.headers)
+              ;
+}
+
   crearUsuario2(user:Usuario)
   {
     return this.http.post(`${base_url}/usuarios`,user);
@@ -131,4 +174,7 @@ export class UsuarioService {
                     )
   }
 
+  cambiarUsuario(usuario:Usuario){         
+    return this.http.put(`${base_url}/usuarios/${usuario.uid}`,usuario,this.headers);
+}
 }
