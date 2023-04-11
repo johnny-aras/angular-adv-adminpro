@@ -26,7 +26,7 @@ export class ModalImagenService {
     return this._notificarUpload;
   }
 
-  abrirModal(tipo:'usuarios'|'medicos'|'hospitales',
+  abrirModal( tipo:string,
               id?:string,
               img:string='no-image')
   { 
