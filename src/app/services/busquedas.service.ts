@@ -70,6 +70,13 @@ export class BusquedasService {
                 })
             );
   }
+
+  busquedaTotal(termino:string)
+  {
+    //RUTA: 					localhost:3005/api/todo/:termino
+    const url=`${base_url}/todo/${termino}`;
+      return this.http.get(url,this.headers);
+  }
   
 
 

@@ -39,11 +39,18 @@ export class UsuarioService {
   logout()
   {
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
+
     google.accounts.id.revoke('roberto.roberto.rtrt@gmail.com',()=>{      
       this.ngZone.run(()=>{        
         this.router.navigateByUrl("/login");
       })
     })
+  }
+  guardarLocalStorage(token:string,menu:string)
+  {
+    localStorage.setItem('token',token);        
+    localStorage.setItem('menu',menu);
   }
   get token():string
   { 
@@ -58,6 +65,12 @@ export class UsuarioService {
         'x-token':this.token
       }
     }
+  }
+  get role():'ADMIN_ROLE'|'USER_ROLE'|undefined
+  {
+         
+      return this.usuario.role;
+    
   }
 
   validarToken()
@@ -79,7 +92,11 @@ export class UsuarioService {
         
         console.log('este es el usuario:'+this.usuario.img);
         //console.log(this.usuario.mostrarNombre());        
-        localStorage.setItem('token',resp.token);        
+
+        //GUARDANDO EL TOKEN Y EL MENU EN EL LOCALSTORAGE
+        // localStorage.setItem('token',resp.token);        
+        // localStorage.setItem('menu',resp.menu);
+        this.guardarLocalStorage(resp.token,JSON.stringify(resp.menu));
         return true;
       }),
       //map( resp =>true),
@@ -103,7 +120,8 @@ export class UsuarioService {
     return this.http.post(`${base_url}/usuarios`,formData)
                     .pipe(
                     tap((resp:any) => {                        
-                    localStorage.setItem('token',resp.token)
+                    //localStorage.setItem('token',resp.token)
+                    this.guardarLocalStorage(resp.token,JSON.stringify(resp.menu));
                     })      
                     );
   }
@@ -161,7 +179,8 @@ eliminarUsuario(usuario:Usuario)
     return this.http.post(`${base_url}/login`,formData)
                     .pipe(
                       tap((resp:any) => {                        
-                        localStorage.setItem('token',resp.token)
+                        //localStorage.setItem('token',resp.token)
+                        this.guardarLocalStorage(resp.token,JSON.stringify(resp.menu));
                       })
                     );
   }
@@ -169,7 +188,8 @@ eliminarUsuario(usuario:Usuario)
     return this.http.post(`${base_url}/login/google`,{token})
                     .pipe(
                       tap((resp:any) => {                        
-                        localStorage.setItem('token',resp.token)
+                        //localStorage.setItem('token',resp.token)
+                        this.guardarLocalStorage(resp.token,JSON.stringify(resp.menu));
                       })
                     )
   }
